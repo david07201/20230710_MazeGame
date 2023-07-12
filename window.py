@@ -4,13 +4,6 @@ import pygame as pg
 import pygame.locals as pgl
 
 
-class Cell():
-    def __init__(self, window, r, c):
-        self.window = window
-        self.r = r
-        self.c = c
-        self.visited = False
-
 class Wall():
     def __init__(self, window, type, r, c):
         self.window = window
@@ -46,6 +39,19 @@ class Wall():
                     width=WALL_DEPTH
                 )
 
+class Cell():
+    def __init__(self, window, r, c):
+        self.window = window
+        self.r = r
+        self.c = c
+        self.visited = False
+
+    def connect_walls(self, top: Wall, right: Wall, botton: Wall, left: Wall):
+        self.top = top
+        self.right = right
+        self.botton = botton
+        self.left = left
+
 
 if __name__ == '__main__':
     BLACK = (0, 0, 0)
@@ -74,6 +80,26 @@ if __name__ == '__main__':
             oWall = Wall(window, 'vertical', r, c)
             v_walls.append(oWall)
     
+    cells = []
+    for r in range(ROWS):
+        for c in range(COLUMNS):
+            oCell = Cell(window, r, c)
+            oCell.connect_walls(
+                top=h_walls[r * COLUMNS + c], 
+                right=v_walls[r * (COLUMNS + 1) + c + 1],
+                botton=h_walls[(r + 1) * COLUMNS + c],
+                left=v_walls[r * (COLUMNS + 1) + c]
+            )
+            cells.append(oCell)
+    
+    test_r = 5
+    test_c = 5
+    test_cell: Cell = cells[test_r * COLUMNS + test_c]
+    test_cell.top.delete()
+    test_cell.right.delete()
+    test_cell.botton.delete()
+    test_cell.left.delete()
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:

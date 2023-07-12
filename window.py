@@ -1,7 +1,6 @@
 import sys
 
 import pygame as pg
-import pygame.locals as pgl
 
 
 class Wall():
@@ -62,17 +61,40 @@ class Cell():
              UNIT - WALL_DEPTH)
         )
 
+class Text():
+    def __init__(self, window: pg.Surface, loc: tuple[int, int], text: str):
+        pg.font.init()
+        self.window = window
+        self.loc = loc
+        self.text = None
+        self.font = pg.font.SysFont('Comic Sans MS', 20)
+        self.set_text(text)
+
+    def set_text(self, text):
+        if self.text == text:
+            return
+        self.text = text
+        self.text_surface = self.font.render(self.text, True, WHITE)
+
+    def draw(self):
+        self.window.blit(self.text_surface, self.loc)
+        
+        
+
 
 if __name__ == '__main__':
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     YELLOW = (255, 0, 0)
     UNIT = 40
-    WALL_DEPTH = 5    # Odd number is prefered
-    WINDOW_WIDTH = 800 + WALL_DEPTH
-    WINDOW_HEIGHT = 800 + WALL_DEPTH
-    ROWS = (WINDOW_HEIGHT - WALL_DEPTH) // UNIT
-    COLUMNS = (WINDOW_WIDTH - WALL_DEPTH) // UNIT
+    WALL_DEPTH = 3    # Odd number is prefered
+    LABEL_HEIGHT = 30
+    MAZE_WIDTH = 1280
+    MAZE_HEIGHT = 600
+    WINDOW_WIDTH = MAZE_WIDTH + WALL_DEPTH
+    WINDOW_HEIGHT = MAZE_HEIGHT + WALL_DEPTH + LABEL_HEIGHT
+    ROWS = (MAZE_HEIGHT) // UNIT
+    COLUMNS = (MAZE_WIDTH) // UNIT
     FPS = 30
 
     pg.init()
@@ -114,17 +136,30 @@ if __name__ == '__main__':
     test_r2 = 5
     test_c2 = 5
 
+    oLabel = Text(
+        window, 
+        (10, WINDOW_HEIGHT - LABEL_HEIGHT), 
+        ("PRESS: 'R' to RESTART; 'Q' to QUIT; "
+        "'TOP', 'RIGHT', 'BOTTON', 'LEFT' to MOVE.")
+    )
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
+            if event.type == pg.KEYUP:
+                if event.key == pg.K_q:
+                    pg.quit()
+                    sys.exit()
 
         window.fill(BLACK)
 
         for oWall in h_walls + v_walls:
             oWall.draw()
         cells[test_r2 * COLUMNS + test_c2].highlight()
+
+        oLabel.draw()
         
         pg.display.update()
 

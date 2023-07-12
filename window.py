@@ -81,14 +81,23 @@ class Cell():
             self.neighbors[3] = cells[self.r * columns + self.c - 1]
 
     def highlight(self, color):
+        # pg.draw.rect(
+        #     self.root, 
+        #     color, 
+        #     (self.unit * self.c + self.wall_depth, 
+        #         self.unit * self.r + self.wall_depth, 
+        #         self.unit - self.wall_depth,
+        #         self.unit - self.wall_depth)
+        # )        
         pg.draw.rect(
             self.root, 
             color, 
-            (self.unit * self.c + self.wall_depth, 
-             self.unit * self.r + self.wall_depth, 
-             self.unit - self.wall_depth,
-             self.unit - self.wall_depth)
+            (self.unit * self.c, 
+             self.unit * self.r, 
+             self.unit + self.wall_depth,
+             self.unit + self.wall_depth)
         )
+
 
 class Text():
     def __init__(self, root: pg.Surface, loc: tuple[int, int], 
@@ -110,8 +119,6 @@ class Text():
     def draw(self):
         self.root.blit(self.text_surface, self.loc)
         
-        
-
 
 if __name__ == '__main__':
     BLACK = (0, 0, 0)

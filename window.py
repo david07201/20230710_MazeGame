@@ -4,7 +4,8 @@ import pygame as pg
 
 
 class Wall():
-    def __init__(self, root: pg.Surface, type: str, r: int, c: int, unit: int,
+    def __init__(self, 
+                 root: pg.Surface, type: str, r: int, c: int, unit: int,
                  wall_depth: int, color: tuple[int, int, int]):
         self.root = root
         self.type = type
@@ -47,8 +48,8 @@ class Wall():
                 )
 
 class Cell():
-    def __init__(self, root: pg.Surface, r: int, c: int, unit: int, 
-                 wall_depth: int):
+    def __init__(self, 
+                 root: pg.Surface, r: int, c: int, unit: int, wall_depth: int):
         self.root = root
         self.r = r
         self.c = c
@@ -56,26 +57,28 @@ class Cell():
         self.wall_depth = wall_depth
         self.visited = False
 
-    def connect_walls(self, top: Wall, right: Wall, botton: Wall, left: Wall):
-        self.top = top
-        self.right = right
-        self.botton = botton
-        self.left = left
+    def connect_walls(self, 
+                      h_walls: list[Wall], v_walls: list[Wall], columns: int):
+        top = h_walls[self.r * columns + self.c]
+        right = v_walls[self.r * (columns + 1) + self.c + 1]
+        botton = h_walls[(self.r + 1) * columns + self.c]
+        left = v_walls[self.r * (columns + 1) + self.c]
+        self.walls: list[Wall] = [top, right, botton, left]
 
     def connect_cells(self, cells: list, rows:int, columns: int):
-        self.neighbors: list[Cell] = []
+        self.neighbors: list[Cell] = [None, None, None, None]
         # Top
         if self.r > 0:
-            self.neighbors.append(cells[(self.r - 1) * columns + self.c])
+            self.neighbors[0] = cells[(self.r - 1) * columns + self.c]
         # Right
         if self.c < columns - 1:
-            self.neighbors.append(cells[self.r * columns + self.c + 1])
+            self.neighbors[1] = cells[self.r * columns + self.c + 1]
         # Botton
         if self.r < rows - 1:
-            self.neighbors.append(cells[(self.r + 1) * columns + self.c])
+            self.neighbors[2] = cells[(self.r + 1) * columns + self.c]
         # Left
         if self.c > 0:
-            self.neighbors.append(cells[self.r * columns + self.c - 1])
+            self.neighbors[3] = cells[self.r * columns + self.c - 1]
 
     def highlight(self, color):
         pg.draw.rect(
@@ -145,12 +148,7 @@ if __name__ == '__main__':
     for r in range(ROWS):
         for c in range(COLUMNS):
             oCell = Cell(root, r, c, UNIT, WALL_DEPTH)
-            oCell.connect_walls(
-                top=h_walls[r * COLUMNS + c], 
-                right=v_walls[r * (COLUMNS + 1) + c + 1],
-                botton=h_walls[(r + 1) * COLUMNS + c],
-                left=v_walls[r * (COLUMNS + 1) + c]
-            )
+            oCell.connect_walls(h_walls, v_walls, COLUMNS)
             cells.append(oCell)
     for oCell in cells:
         oCell.connect_cells(cells, ROWS, COLUMNS)
@@ -158,10 +156,7 @@ if __name__ == '__main__':
     test_r1 = 5
     test_c1 = 5
     test_cell = cells[test_r1 * COLUMNS + test_c1]
-    test_cell.top.delete()
-    test_cell.right.delete()
-    test_cell.botton.delete()
-    test_cell.left.delete()
+    test_cell.walls[0].delete()
 
     test_r2 = 5
     test_c2 = 5

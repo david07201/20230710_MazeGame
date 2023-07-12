@@ -59,12 +59,7 @@ if __name__ == '__main__':
     for r in range(ROWS):
         for c in range(COLUMNS):
             oCell = window.Cell(root, r, c, UNIT, WALL_DEPTH)
-            oCell.connect_walls(
-                top=h_walls[r * COLUMNS + c], 
-                right=v_walls[r * (COLUMNS + 1) + c + 1],
-                botton=h_walls[(r + 1) * COLUMNS + c],
-                left=v_walls[r * (COLUMNS + 1) + c]
-            )
+            oCell.connect_walls(h_walls, v_walls, COLUMNS)
             cells.append(oCell)
     for oCell in cells:
         oCell.connect_cells(cells, ROWS, COLUMNS)
@@ -72,10 +67,7 @@ if __name__ == '__main__':
     test_r1 = 5
     test_c1 = 5
     test_cell = cells[test_r1 * COLUMNS + test_c1]
-    test_cell.top.delete()
-    test_cell.right.delete()
-    test_cell.botton.delete()
-    test_cell.left.delete()
+    test_cell.walls[0].delete()
 
     test_r2 = 5
     test_c2 = 5

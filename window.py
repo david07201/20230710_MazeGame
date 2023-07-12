@@ -81,14 +81,6 @@ class Cell():
             self.neighbors[3] = cells[self.r * columns + self.c - 1]
 
     def highlight(self, color):
-        # pg.draw.rect(
-        #     self.root, 
-        #     color, 
-        #     (self.unit * self.c + self.wall_depth, 
-        #         self.unit * self.r + self.wall_depth, 
-        #         self.unit - self.wall_depth,
-        #         self.unit - self.wall_depth)
-        # )        
         pg.draw.rect(
             self.root, 
             color, 

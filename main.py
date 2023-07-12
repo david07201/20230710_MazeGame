@@ -7,11 +7,15 @@ import window
 
 
 class Maze():
-    def __init__(self):
-        pass
+    def __init__(self, cells: list[window.Cell]):
+        self.cells = cells
 
-    def generate(Self):
-        pass
+    def generate(self):
+        cur = random.choice(self.cells)
+        cur.generated = True
+        stack = []
+        
+
 
     def set_start_pos(self):
         pass
@@ -64,6 +68,7 @@ if __name__ == '__main__':
     for oCell in cells:
         oCell.connect_cells(cells, ROWS, COLUMNS)
     
+    maze = Maze(cells)
     test_r1 = 5
     test_c1 = 5
     test_cell = cells[test_r1 * COLUMNS + test_c1]

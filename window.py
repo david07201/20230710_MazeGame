@@ -55,7 +55,7 @@ class Cell():
         self.c = c
         self.unit = unit
         self.wall_depth = wall_depth
-        self.visited = False
+        self.generated = False
 
     def connect_walls(self, 
                       h_walls: list[Wall], v_walls: list[Wall], columns: int):

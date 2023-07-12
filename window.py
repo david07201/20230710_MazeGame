@@ -62,11 +62,13 @@ class Cell():
         )
 
 class Text():
-    def __init__(self, root: pg.Surface, loc: tuple[int, int], text: str):
+    def __init__(self, root: pg.Surface, loc: tuple[int, int], 
+                 text: str, color: tuple[int, int, int]):
         pg.font.init()
         self.root = root
         self.loc = loc
         self.text = None
+        self.color = color
         self.font = pg.font.SysFont('Comic Sans MS', 20)
         self.set_text(text)
 
@@ -74,7 +76,7 @@ class Text():
         if self.text == text:
             return
         self.text = text
-        self.text_surface = self.font.render(self.text, True, WHITE)
+        self.text_surface = self.font.render(self.text, True, self.color)
 
     def draw(self):
         self.root.blit(self.text_surface, self.loc)
@@ -140,7 +142,8 @@ if __name__ == '__main__':
         root, 
         (10, WINDOW_HEIGHT - LABEL_HEIGHT), 
         ("PRESS: 'R' to RESTART; 'Q' to QUIT; "
-        "'TOP', 'RIGHT', 'BOTTON', 'LEFT' to MOVE.")
+        "'TOP', 'RIGHT', 'BOTTON', 'LEFT' to MOVE."),
+        WHITE
     )
 
     while True:

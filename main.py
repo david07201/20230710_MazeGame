@@ -26,25 +26,25 @@ if __name__ == '__main__':
     FPS = 30
 
     pg.init()
-    window = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    root = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     clock = pg.time.Clock()
 
     h_walls: list[window.Wall] = []
     for r in range(ROWS + 1):
         for c in range(COLUMNS):
-            oWall = window.Wall(window, 'horizontal', r, c)
+            oWall = window.Wall(root, 'horizontal', r, c)
             h_walls.append(oWall)
 
-    v_walls: list[Wall] = []
+    v_walls: list[window.Wall] = []
     for r in range(ROWS):
         for c in range(COLUMNS + 1):
-            oWall = Wall(window, 'vertical', r, c)
+            oWall = window.Wall(root, 'vertical', r, c)
             v_walls.append(oWall)
     
-    cells: list[Cell] = []
+    cells: list[window.Cell] = []
     for r in range(ROWS):
         for c in range(COLUMNS):
-            oCell = Cell(window, r, c)
+            oCell = window.Cell(root, r, c)
             oCell.connect_walls(
                 top=h_walls[r * COLUMNS + c], 
                 right=v_walls[r * (COLUMNS + 1) + c + 1],
@@ -64,8 +64,8 @@ if __name__ == '__main__':
     test_r2 = 5
     test_c2 = 5
 
-    oLabel = Text(
-        window, 
+    oLabel = window.Text(
+        root, 
         (10, WINDOW_HEIGHT - LABEL_HEIGHT), 
         ("PRESS: 'R' to RESTART; 'Q' to QUIT; "
         "'TOP', 'RIGHT', 'BOTTON', 'LEFT' to MOVE.")
@@ -81,7 +81,7 @@ if __name__ == '__main__':
                     pg.quit()
                     sys.exit()
 
-        window.fill(BLACK)
+        root.fill(BLACK)
 
         for oWall in h_walls + v_walls:
             oWall.draw()

@@ -4,11 +4,15 @@ import pygame as pg
 
 
 class Wall():
-    def __init__(self, root: pg.Surface, type: str, r: int, c: int):
+    def __init__(self, root: pg.Surface, type: str, r: int, c: int, unit: int,
+                 wall_depth: int, color: tuple[int, int, int]):
         self.root = root
         self.type = type
         self.r = r
         self.c = c
+        self.unit = unit
+        self.wall_depth = wall_depth
+        self.color = color
         self.existed = True
 
     def create(self):
@@ -20,29 +24,36 @@ class Wall():
     def draw(self):
         if self.existed:
             if self.type == 'horizontal':
-                y = UNIT * self.r + WALL_DEPTH // 2
+                y = self.unit * self.r + self.wall_depth // 2
+                start = (self.unit * self.c, y)
+                end = (self.unit * (self.c + 1) + self.wall_depth // 2 + 1, y)
                 pg.draw.line(
                     surface=self.root, 
-                    color=WHITE, 
-                    start_pos=(UNIT * self.c, y), 
-                    end_pos=(UNIT * (self.c + 1) + WALL_DEPTH // 2 + 1, y), 
-                    width=WALL_DEPTH
+                    color=self.color, 
+                    start_pos=start, 
+                    end_pos=end, 
+                    width=self.wall_depth
                 )
             elif self.type == 'vertical':
-                x = UNIT * self.c + WALL_DEPTH // 2
+                x = self.unit * self.c + self.wall_depth // 2
+                start = (x, self.unit * self.r)
+                end = (x, self.unit * (self.r + 1) + self.wall_depth // 2 + 1)
                 pg.draw.line(
                     surface=self.root, 
-                    color=WHITE, 
-                    start_pos=(x, UNIT * self.r), 
-                    end_pos=(x, UNIT * (self.r + 1) + WALL_DEPTH // 2 + 1), 
-                    width=WALL_DEPTH
+                    color=self.color, 
+                    start_pos=start, 
+                    end_pos=end, 
+                    width=self.wall_depth
                 )
 
 class Cell():
-    def __init__(self, root: pg.Surface, r: int, c: int):
+    def __init__(self, root: pg.Surface, r: int, c: int, unit: int, 
+                 wall_depth: int):
         self.root = root
         self.r = r
         self.c = c
+        self.unit = unit
+        self.wall_depth = wall_depth
         self.visited = False
 
     def connect_walls(self, top: Wall, right: Wall, botton: Wall, left: Wall):
@@ -51,14 +62,14 @@ class Cell():
         self.botton = botton
         self.left = left
 
-    def highlight(self):
+    def highlight(self, color):
         pg.draw.rect(
             self.root, 
-            YELLOW, 
-            (UNIT * self.c + WALL_DEPTH, 
-             UNIT * self.r + WALL_DEPTH, 
-             UNIT - WALL_DEPTH,
-             UNIT - WALL_DEPTH)
+            color, 
+            (self.unit * self.c + self.wall_depth, 
+             self.unit * self.r + self.wall_depth, 
+             self.unit - self.wall_depth,
+             self.unit - self.wall_depth)
         )
 
 class Text():
@@ -87,7 +98,7 @@ class Text():
 if __name__ == '__main__':
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
-    YELLOW = (255, 0, 0)
+    YELLOW = (255, 255, 0)
     UNIT = 40
     WALL_DEPTH = 3    # Odd number is prefered
     LABEL_HEIGHT = 30
@@ -106,19 +117,19 @@ if __name__ == '__main__':
     h_walls: list[Wall] = []
     for r in range(ROWS + 1):
         for c in range(COLUMNS):
-            oWall = Wall(root, 'horizontal', r, c)
+            oWall = Wall(root, 'horizontal', r, c, UNIT, WALL_DEPTH, WHITE)
             h_walls.append(oWall)
 
     v_walls: list[Wall] = []
     for r in range(ROWS):
         for c in range(COLUMNS + 1):
-            oWall = Wall(root, 'vertical', r, c)
+            oWall = Wall(root, 'vertical', r, c, UNIT, WALL_DEPTH, WHITE)
             v_walls.append(oWall)
     
     cells: list[Cell] = []
     for r in range(ROWS):
         for c in range(COLUMNS):
-            oCell = Cell(root, r, c)
+            oCell = Cell(root, r, c, UNIT, WALL_DEPTH)
             oCell.connect_walls(
                 top=h_walls[r * COLUMNS + c], 
                 right=v_walls[r * (COLUMNS + 1) + c + 1],
@@ -160,7 +171,7 @@ if __name__ == '__main__':
 
         for oWall in h_walls + v_walls:
             oWall.draw()
-        cells[test_r2 * COLUMNS + test_c2].highlight()
+        cells[test_r2 * COLUMNS + test_c2].highlight(YELLOW)
 
         oLabel.draw()
         

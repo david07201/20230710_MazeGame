@@ -4,8 +4,8 @@ import pygame as pg
 
 
 class Wall():
-    def __init__(self, window, type, r, c):
-        self.window = window
+    def __init__(self, root: pg.Surface, type: str, r: int, c: int):
+        self.root = root
         self.type = type
         self.r = r
         self.c = c
@@ -22,7 +22,7 @@ class Wall():
             if self.type == 'horizontal':
                 y = UNIT * self.r + WALL_DEPTH // 2
                 pg.draw.line(
-                    surface=self.window, 
+                    surface=self.root, 
                     color=WHITE, 
                     start_pos=(UNIT * self.c, y), 
                     end_pos=(UNIT * (self.c + 1) + WALL_DEPTH // 2 + 1, y), 
@@ -31,7 +31,7 @@ class Wall():
             elif self.type == 'vertical':
                 x = UNIT * self.c + WALL_DEPTH // 2
                 pg.draw.line(
-                    surface=self.window, 
+                    surface=self.root, 
                     color=WHITE, 
                     start_pos=(x, UNIT * self.r), 
                     end_pos=(x, UNIT * (self.r + 1) + WALL_DEPTH // 2 + 1), 
@@ -39,8 +39,8 @@ class Wall():
                 )
 
 class Cell():
-    def __init__(self, window, r, c):
-        self.window = window
+    def __init__(self, root: pg.Surface, r: int, c: int):
+        self.root = root
         self.r = r
         self.c = c
         self.visited = False
@@ -53,7 +53,7 @@ class Cell():
 
     def highlight(self):
         pg.draw.rect(
-            self.window, 
+            self.root, 
             YELLOW, 
             (UNIT * self.c + WALL_DEPTH, 
              UNIT * self.r + WALL_DEPTH, 
@@ -62,22 +62,22 @@ class Cell():
         )
 
 class Text():
-    def __init__(self, window: pg.Surface, loc: tuple[int, int], text: str):
+    def __init__(self, root: pg.Surface, loc: tuple[int, int], text: str):
         pg.font.init()
-        self.window = window
+        self.root = root
         self.loc = loc
         self.text = None
         self.font = pg.font.SysFont('Comic Sans MS', 20)
         self.set_text(text)
 
-    def set_text(self, text):
+    def set_text(self, text: str):
         if self.text == text:
             return
         self.text = text
         self.text_surface = self.font.render(self.text, True, WHITE)
 
     def draw(self):
-        self.window.blit(self.text_surface, self.loc)
+        self.root.blit(self.text_surface, self.loc)
         
         
 
@@ -98,25 +98,25 @@ if __name__ == '__main__':
     FPS = 30
 
     pg.init()
-    window = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    root = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     clock = pg.time.Clock()
 
     h_walls: list[Wall] = []
     for r in range(ROWS + 1):
         for c in range(COLUMNS):
-            oWall = Wall(window, 'horizontal', r, c)
+            oWall = Wall(root, 'horizontal', r, c)
             h_walls.append(oWall)
 
     v_walls: list[Wall] = []
     for r in range(ROWS):
         for c in range(COLUMNS + 1):
-            oWall = Wall(window, 'vertical', r, c)
+            oWall = Wall(root, 'vertical', r, c)
             v_walls.append(oWall)
     
     cells: list[Cell] = []
     for r in range(ROWS):
         for c in range(COLUMNS):
-            oCell = Cell(window, r, c)
+            oCell = Cell(root, r, c)
             oCell.connect_walls(
                 top=h_walls[r * COLUMNS + c], 
                 right=v_walls[r * (COLUMNS + 1) + c + 1],
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     test_c2 = 5
 
     oLabel = Text(
-        window, 
+        root, 
         (10, WINDOW_HEIGHT - LABEL_HEIGHT), 
         ("PRESS: 'R' to RESTART; 'Q' to QUIT; "
         "'TOP', 'RIGHT', 'BOTTON', 'LEFT' to MOVE.")
@@ -153,7 +153,7 @@ if __name__ == '__main__':
                     pg.quit()
                     sys.exit()
 
-        window.fill(BLACK)
+        root.fill(BLACK)
 
         for oWall in h_walls + v_walls:
             oWall.draw()

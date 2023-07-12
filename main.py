@@ -1,11 +1,23 @@
 import sys
+import random
 
 import pygame as pg
 
 import window
 
 
+class Maze():
+    def __init__(self):
+        pass
 
+    def generate(Self):
+        pass
+
+    def set_start_pos(self):
+        pass
+
+    def set_goal_pos(self):
+        pass
         
         
 
@@ -54,6 +66,8 @@ if __name__ == '__main__':
                 left=v_walls[r * (COLUMNS + 1) + c]
             )
             cells.append(oCell)
+    for oCell in cells:
+        oCell.connect_cells(cells, ROWS, COLUMNS)
     
     test_r1 = 5
     test_c1 = 5

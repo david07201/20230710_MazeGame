@@ -62,6 +62,21 @@ class Cell():
         self.botton = botton
         self.left = left
 
+    def connect_cells(self, cells: list, rows:int, columns: int):
+        self.neighbors: list[Cell] = []
+        # Top
+        if self.r > 0:
+            self.neighbors.append(cells[(self.r - 1) * columns + self.c])
+        # Right
+        if self.c < columns - 1:
+            self.neighbors.append(cells[self.r * columns + self.c + 1])
+        # Botton
+        if self.r < rows - 1:
+            self.neighbors.append(cells[(self.r + 1) * columns + self.c])
+        # Left
+        if self.c > 0:
+            self.neighbors.append(cells[self.r * columns + self.c - 1])
+
     def highlight(self, color):
         pg.draw.rect(
             self.root, 
@@ -137,6 +152,8 @@ if __name__ == '__main__':
                 left=v_walls[r * (COLUMNS + 1) + c]
             )
             cells.append(oCell)
+    for oCell in cells:
+        oCell.connect_cells(cells, ROWS, COLUMNS)
     
     test_r1 = 5
     test_c1 = 5
@@ -166,6 +183,9 @@ if __name__ == '__main__':
                 if event.key == pg.K_q:
                     pg.quit()
                     sys.exit()
+                if event.key == pg.K_r:
+                    print(cells[test_r2 * COLUMNS + test_c2].neighbors[0].r)
+                    print(cells[test_r2 * COLUMNS + test_c2].neighbors[0].c)
 
         root.fill(BLACK)
 

@@ -26,7 +26,7 @@ class Wall():
                     surface=self.window, 
                     color=WHITE, 
                     start_pos=(UNIT * self.c, y), 
-                    end_pos=(UNIT * (self.c + 1) + WALL_DEPTH, y), 
+                    end_pos=(UNIT * (self.c + 1) + WALL_DEPTH // 2 + 1, y), 
                     width=WALL_DEPTH
                 )
             elif self.type == 'vertical':
@@ -35,7 +35,7 @@ class Wall():
                     surface=self.window, 
                     color=WHITE, 
                     start_pos=(x, UNIT * self.r), 
-                    end_pos=(x, UNIT * (self.r + 1) + WALL_DEPTH), 
+                    end_pos=(x, UNIT * (self.r + 1) + WALL_DEPTH // 2 + 1), 
                     width=WALL_DEPTH
                 )
 
@@ -52,12 +52,23 @@ class Cell():
         self.botton = botton
         self.left = left
 
+    def highlight(self):
+        pg.draw.rect(
+            self.window, 
+            YELLOW, 
+            (UNIT * self.c + WALL_DEPTH, 
+             UNIT * self.r + WALL_DEPTH, 
+             UNIT - WALL_DEPTH,
+             UNIT - WALL_DEPTH)
+        )
+
 
 if __name__ == '__main__':
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
+    YELLOW = (255, 0, 0)
     UNIT = 40
-    WALL_DEPTH = 1    # Odd number is prefered
+    WALL_DEPTH = 5    # Odd number is prefered
     WINDOW_WIDTH = 800 + WALL_DEPTH
     WINDOW_HEIGHT = 800 + WALL_DEPTH
     ROWS = (WINDOW_HEIGHT - WALL_DEPTH) // UNIT
@@ -68,19 +79,19 @@ if __name__ == '__main__':
     window = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     clock = pg.time.Clock()
 
-    h_walls = []
+    h_walls: list[Wall] = []
     for r in range(ROWS + 1):
         for c in range(COLUMNS):
             oWall = Wall(window, 'horizontal', r, c)
             h_walls.append(oWall)
 
-    v_walls = []
+    v_walls: list[Wall] = []
     for r in range(ROWS):
         for c in range(COLUMNS + 1):
             oWall = Wall(window, 'vertical', r, c)
             v_walls.append(oWall)
     
-    cells = []
+    cells: list[Cell] = []
     for r in range(ROWS):
         for c in range(COLUMNS):
             oCell = Cell(window, r, c)
@@ -92,13 +103,16 @@ if __name__ == '__main__':
             )
             cells.append(oCell)
     
-    test_r = 5
-    test_c = 5
-    test_cell: Cell = cells[test_r * COLUMNS + test_c]
+    test_r1 = 5
+    test_c1 = 5
+    test_cell = cells[test_r1 * COLUMNS + test_c1]
     test_cell.top.delete()
     test_cell.right.delete()
     test_cell.botton.delete()
     test_cell.left.delete()
+
+    test_r2 = 5
+    test_c2 = 5
 
     while True:
         for event in pg.event.get():
@@ -110,7 +124,8 @@ if __name__ == '__main__':
 
         for oWall in h_walls + v_walls:
             oWall.draw()
-
+        cells[test_r2 * COLUMNS + test_c2].highlight()
+        
         pg.display.update()
 
         clock.tick(FPS)
